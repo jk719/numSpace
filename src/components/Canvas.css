@@ -1,3 +1,39 @@
+.room-info {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  background: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 999;
+  font-size: 14px;
+}
+
+.room-info strong {
+  color: #667eea;
+  font-family: monospace;
+  font-size: 16px;
+}
+
+.copy-link-btn {
+  padding: 6px 12px;
+  font-size: 12px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.copy-link-btn:hover {
+  background: #5568d3;
+}
+
 .canvas {
   width: 100vw;
   height: 100vh;

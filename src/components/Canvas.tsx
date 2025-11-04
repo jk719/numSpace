@@ -5,7 +5,11 @@ import TextBlock from './TextBlock';
 import MathPalette from './MathPalette';
 import './Canvas.css';
 
-const Canvas = () => {
+interface CanvasProps {
+  roomId: string;
+}
+
+const Canvas = ({ roomId }: CanvasProps) => {
   const canvasRef = useRef<HTMLDivElement>(null);
   const { elements, addElement, pendingSymbol, setPendingSymbol } = useWhiteboardStore();
 
@@ -35,8 +39,21 @@ const Canvas = () => {
     }
   };
 
+  const copyRoomLink = () => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('room', roomId);
+    navigator.clipboard.writeText(url.toString());
+    alert('Room link copied to clipboard!');
+  };
+
   return (
     <>
+      <div className="room-info">
+        <span>Room: <strong>{roomId}</strong></span>
+        <button onClick={copyRoomLink} className="copy-link-btn">
+          Copy Link
+        </button>
+      </div>
       <div
         ref={canvasRef}
         className={`canvas ${pendingSymbol ? 'placing-symbol' : ''}`}
