@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
 import { useWhiteboardStore } from '../store/whiteboardStore';
 import DrawingElement from './DrawingElement';
 import Toolbar from './Toolbar';
@@ -12,7 +12,7 @@ interface CanvasProps {
 const Canvas = ({ roomId }: CanvasProps) => {
   const canvasRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
-  const { elements, addElement, drawingColor, strokeWidth } = useWhiteboardStore();
+  const { elements, addElement, drawingColor, strokeWidth, undo, redo } = useWhiteboardStore();
   const [isDrawing, setIsDrawing] = useState(false);
   const [currentPoints, setCurrentPoints] = useState<number[][]>([]);
 
@@ -103,6 +103,27 @@ const Canvas = ({ roomId }: CanvasProps) => {
     navigator.clipboard.writeText(url.toString());
     alert('Room link copied to clipboard!');
   };
+
+  // Keyboard shortcuts for undo/redo
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Check for Cmd (Mac) or Ctrl (Windows/Linux)
+      const isCmdOrCtrl = e.metaKey || e.ctrlKey;
+
+      if (isCmdOrCtrl && e.shiftKey && e.key === 'z') {
+        // Cmd/Ctrl + Shift + Z = Redo
+        e.preventDefault();
+        redo();
+      } else if (isCmdOrCtrl && e.key === 'z') {
+        // Cmd/Ctrl + Z = Undo
+        e.preventDefault();
+        undo();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [undo, redo]);
 
   return (
     <>
