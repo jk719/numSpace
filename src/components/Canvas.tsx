@@ -16,6 +16,28 @@ const Canvas = ({ roomId }: CanvasProps) => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [currentPoints, setCurrentPoints] = useState<number[][]>([]);
 
+  // Smooth out points for better trackpad/mouse experience
+  const smoothPoints = useCallback((points: number[][]) => {
+    if (points.length < 3) return points;
+
+    const smoothed: number[][] = [points[0]];
+
+    for (let i = 1; i < points.length - 1; i++) {
+      const prev = points[i - 1];
+      const curr = points[i];
+      const next = points[i + 1];
+
+      // Average with neighbors for smoothing
+      const smoothedX = (prev[0] + curr[0] + next[0]) / 3;
+      const smoothedY = (prev[1] + curr[1] + next[1]) / 3;
+
+      smoothed.push([smoothedX, smoothedY]);
+    }
+
+    smoothed.push(points[points.length - 1]);
+    return smoothed;
+  }, []);
+
   const getPoint = useCallback((e: React.PointerEvent | React.TouchEvent | React.MouseEvent) => {
     if (!svgRef.current) return null;
     const rect = svgRef.current.getBoundingClientRect();
@@ -42,7 +64,18 @@ const Canvas = ({ roomId }: CanvasProps) => {
         e.preventDefault();
         const point = getPoint(e);
         if (point) {
-          setCurrentPoints((prev) => [...prev, point]);
+          setCurrentPoints((prev) => {
+            // Skip points that are too close to reduce jitter (especially for trackpad)
+            if (prev.length > 0) {
+              const lastPoint = prev[prev.length - 1];
+              const distance = Math.sqrt(
+                Math.pow(point[0] - lastPoint[0], 2) + Math.pow(point[1] - lastPoint[1], 2)
+              );
+              // Minimum distance threshold - helps with trackpad precision
+              if (distance < 2) return prev;
+            }
+            return [...prev, point];
+          });
         }
       }
     },
@@ -51,16 +84,18 @@ const Canvas = ({ roomId }: CanvasProps) => {
 
   const handlePointerUp = useCallback(() => {
     if (isDrawing && currentPoints.length > 1) {
+      // Apply smoothing before saving
+      const smoothed = smoothPoints(currentPoints);
       addElement({
         type: 'drawing',
-        points: currentPoints,
+        points: smoothed,
         color: drawingColor,
         strokeWidth,
       });
       setCurrentPoints([]);
     }
     setIsDrawing(false);
-  }, [isDrawing, currentPoints, addElement, drawingColor, strokeWidth]);
+  }, [isDrawing, currentPoints, addElement, drawingColor, strokeWidth, smoothPoints]);
 
   const copyRoomLink = () => {
     const url = new URL(window.location.href);

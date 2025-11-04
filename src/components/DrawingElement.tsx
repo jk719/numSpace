@@ -20,11 +20,12 @@ const DrawingElement = ({ element }: DrawingElementProps) => {
 
     const stroke = getStroke(element.points, {
       size: element.strokeWidth * 4,
-      thinning: 0.5,
-      smoothing: 0.5,
-      streamline: 0.5,
+      thinning: 0.6, // More consistent line width (better for mouse/trackpad)
+      smoothing: 0.7, // Higher smoothing for cleaner lines
+      streamline: 0.6, // More streamlining reduces jitter
       easing: (t) => t,
       simulatePressure: true,
+      last: true, // Improves end caps
     });
 
     if (!stroke.length) return '';
