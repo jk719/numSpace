@@ -3,6 +3,7 @@ import { useWhiteboardStore } from '../store/whiteboardStore';
 import { snapPointToGrid } from '../utils/gridSnap';
 import TextBlock from './TextBlock';
 import MathPalette from './MathPalette';
+import Toolbar from './Toolbar';
 import './Canvas.css';
 
 interface CanvasProps {
@@ -54,6 +55,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
           Copy Link
         </button>
       </div>
+      <Toolbar />
       <div
         ref={canvasRef}
         className={`canvas ${pendingSymbol ? 'placing-symbol' : ''}`}

@@ -1,4 +1,11 @@
-import { TextElement } from '../store/whiteboardStore';
+interface TextElement {
+  id: string;
+  x: number;
+  y: number;
+  content: string;
+  fontSize: number;
+  color: string;
+}
 
 const PROXIMITY_THRESHOLD = 60; // pixels
 const ALIGNMENT_TOLERANCE = 40; // pixels for horizontal/vertical alignment

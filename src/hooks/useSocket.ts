@@ -1,8 +1,17 @@
 import { useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { useWhiteboardStore, TextElement } from '../store/whiteboardStore';
+import { useWhiteboardStore } from '../store/whiteboardStore';
 
 const SOCKET_URL = 'http://localhost:3001';
+
+interface TextElement {
+  id: string;
+  x: number;
+  y: number;
+  content: string;
+  fontSize: number;
+  color: string;
+}
 
 export const useSocket = (roomId: string) => {
   const socketRef = useRef<Socket | null>(null);

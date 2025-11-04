@@ -6,6 +6,7 @@
   z-index: 1;
   min-width: 50px;
   min-height: 30px;
+  position: relative;
 }
 
 .text-block:hover {
@@ -15,6 +16,39 @@
 .text-block.selected {
   background-color: rgba(0, 123, 255, 0.1);
   outline: 2px solid #007bff;
+  padding-top: 32px;
+}
+
+.delete-btn {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #dc3545;
+  color: white;
+  border: 2px solid white;
+  font-size: 20px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  line-height: 1;
+  padding: 0;
+  transition: all 0.2s;
+}
+
+.delete-btn:hover {
+  background: #c82333;
+  transform: scale(1.1);
+}
+
+.delete-btn:active {
+  transform: scale(0.9);
 }
 
 .text-input {

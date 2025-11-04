@@ -1,21 +1,35 @@
 import { useRef, useState, useEffect } from 'react';
 import { useDrag } from '@use-gesture/react';
-import { useWhiteboardStore, TextElement } from '../store/whiteboardStore';
+import { useWhiteboardStore } from '../store/whiteboardStore';
 import { snapPointToGrid } from '../utils/gridSnap';
 import { suggestAlignment } from '../utils/smartGrouping';
 import './TextBlock.css';
+
+interface TextElement {
+  id: string;
+  x: number;
+  y: number;
+  content: string;
+  fontSize: number;
+  color: string;
+}
 
 interface TextBlockProps {
   element: TextElement;
 }
 
 const TextBlock = ({ element }: TextBlockProps) => {
-  const { updateElement, setSelectedElement, selectedElementId, elements } = useWhiteboardStore();
+  const { updateElement, setSelectedElement, selectedElementId, elements, deleteElement } = useWhiteboardStore();
   const [isEditing, setIsEditing] = useState(element.content === '');
   const inputRef = useRef<HTMLInputElement>(null);
   const blockRef = useRef<HTMLDivElement>(null);
 
   const isSelected = selectedElementId === element.id;
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    deleteElement(element.id);
+  };
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
@@ -84,6 +98,15 @@ const TextBlock = ({ element }: TextBlockProps) => {
         userSelect: 'none',
       }}
     >
+      {isSelected && (
+        <button
+          className="delete-btn"
+          onClick={handleDelete}
+          onTouchEnd={handleDelete}
+        >
+          ×
+        </button>
+      )}
       {isEditing ? (
         <input
           ref={inputRef}
