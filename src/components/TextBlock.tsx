@@ -1,6 +1,8 @@
 import { useRef, useState, useEffect } from 'react';
 import { useDrag } from '@use-gesture/react';
 import { useWhiteboardStore, TextElement } from '../store/whiteboardStore';
+import { snapPointToGrid } from '../utils/gridSnap';
+import { suggestAlignment } from '../utils/smartGrouping';
 import './TextBlock.css';
 
 interface TextBlockProps {
@@ -8,7 +10,7 @@ interface TextBlockProps {
 }
 
 const TextBlock = ({ element }: TextBlockProps) => {
-  const { updateElement, setSelectedElement, selectedElementId } = useWhiteboardStore();
+  const { updateElement, setSelectedElement, selectedElementId, elements } = useWhiteboardStore();
   const [isEditing, setIsEditing] = useState(element.content === '');
   const inputRef = useRef<HTMLInputElement>(null);
   const blockRef = useRef<HTMLDivElement>(null);
@@ -22,14 +24,30 @@ const TextBlock = ({ element }: TextBlockProps) => {
   }, [isEditing]);
 
   const bind = useDrag(
-    ({ offset: [x, y], tap }) => {
+    ({ offset: [x, y], tap, last }) => {
       if (tap) {
         // Single tap - select and edit
         setSelectedElement(element.id);
         setIsEditing(true);
       } else {
         // Dragging - update position
-        updateElement(element.id, { x, y });
+        if (last) {
+          // First, snap to grid
+          const snapped = snapPointToGrid(x, y);
+
+          // Then, check for smart alignment with nearby elements
+          const tempElement = { ...element, x: snapped.x, y: snapped.y };
+          const alignment = suggestAlignment(tempElement, elements);
+
+          if (alignment) {
+            updateElement(element.id, { x: alignment.x, y: alignment.y });
+          } else {
+            updateElement(element.id, { x: snapped.x, y: snapped.y });
+          }
+        } else {
+          // Free movement while dragging
+          updateElement(element.id, { x, y });
+        }
       }
     },
     {

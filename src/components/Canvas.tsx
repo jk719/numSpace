@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { useWhiteboardStore } from '../store/whiteboardStore';
+import { snapPointToGrid } from '../utils/gridSnap';
 import TextBlock from './TextBlock';
 import MathPalette from './MathPalette';
 import './Canvas.css';
@@ -12,8 +13,11 @@ const Canvas = () => {
     // Only create new text if clicking directly on canvas (not on existing elements)
     if (e.target === canvasRef.current) {
       const rect = canvasRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+      const rawX = e.clientX - rect.left;
+      const rawY = e.clientY - rect.top;
+
+      // Snap to grid
+      const { x, y } = snapPointToGrid(rawX, rawY);
 
       // If there's a pending symbol, place it. Otherwise, create empty text
       addElement({
