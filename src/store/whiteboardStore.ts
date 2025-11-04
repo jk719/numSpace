@@ -1,15 +1,5 @@
 import { create } from 'zustand';
 
-export interface TextElement {
-  type: 'text';
-  id: string;
-  x: number;
-  y: number;
-  content: string;
-  fontSize: number;
-  color: string;
-}
-
 export interface DrawingElement {
   type: 'drawing';
   id: string;
@@ -18,23 +8,15 @@ export interface DrawingElement {
   strokeWidth: number;
 }
 
-export type WhiteboardElement = TextElement | DrawingElement;
-
-type DrawingMode = 'text' | 'draw';
-
 interface WhiteboardState {
-  elements: WhiteboardElement[];
+  elements: DrawingElement[];
   selectedElementId: string | null;
-  pendingSymbol: string | null;
-  drawingMode: DrawingMode;
   drawingColor: string;
   strokeWidth: number;
-  addElement: (element: Omit<WhiteboardElement, 'id'>) => void;
-  updateElement: (id: string, updates: Partial<WhiteboardElement>) => void;
+  addElement: (element: Omit<DrawingElement, 'id'>) => void;
+  updateElement: (id: string, updates: Partial<DrawingElement>) => void;
   deleteElement: (id: string) => void;
   setSelectedElement: (id: string | null) => void;
-  setPendingSymbol: (symbol: string | null) => void;
-  setDrawingMode: (mode: DrawingMode) => void;
   setDrawingColor: (color: string) => void;
   setStrokeWidth: (width: number) => void;
 }
@@ -42,8 +24,6 @@ interface WhiteboardState {
 export const useWhiteboardStore = create<WhiteboardState>((set) => ({
   elements: [],
   selectedElementId: null,
-  pendingSymbol: null,
-  drawingMode: 'text',
   drawingColor: '#000000',
   strokeWidth: 2,
 
@@ -70,12 +50,6 @@ export const useWhiteboardStore = create<WhiteboardState>((set) => ({
 
   setSelectedElement: (id) =>
     set({ selectedElementId: id }),
-
-  setPendingSymbol: (symbol) =>
-    set({ pendingSymbol: symbol }),
-
-  setDrawingMode: (mode) =>
-    set({ drawingMode: mode, pendingSymbol: null }),
 
   setDrawingColor: (color) =>
     set({ drawingColor: color }),

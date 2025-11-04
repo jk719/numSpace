@@ -6,51 +6,17 @@
   background: white;
   border-radius: 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  padding: 12px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
   z-index: 1000;
 }
 
-.mode-switch {
-  display: flex;
-  gap: 8px;
-  background: #f8f9fa;
-  border-radius: 12px;
-  padding: 4px;
-}
-
-.mode-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border: none;
-  background: transparent;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-  color: #6c757d;
-}
-
-.mode-btn:hover {
-  background: #e9ecef;
-}
-
-.mode-btn.active {
-  background: white;
-  color: #667eea;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
 .drawing-controls {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding-top: 8px;
-  border-top: 1px solid #e9ecef;
 }
 
 .color-picker {
