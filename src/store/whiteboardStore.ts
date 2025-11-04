@@ -12,15 +12,18 @@ export interface TextElement {
 interface WhiteboardState {
   elements: TextElement[];
   selectedElementId: string | null;
+  pendingSymbol: string | null;
   addElement: (element: Omit<TextElement, 'id'>) => void;
   updateElement: (id: string, updates: Partial<TextElement>) => void;
   deleteElement: (id: string) => void;
   setSelectedElement: (id: string | null) => void;
+  setPendingSymbol: (symbol: string | null) => void;
 }
 
 export const useWhiteboardStore = create<WhiteboardState>((set) => ({
   elements: [],
   selectedElementId: null,
+  pendingSymbol: null,
 
   addElement: (element) =>
     set((state) => ({
@@ -45,4 +48,7 @@ export const useWhiteboardStore = create<WhiteboardState>((set) => ({
 
   setSelectedElement: (id) =>
     set({ selectedElementId: id }),
+
+  setPendingSymbol: (symbol) =>
+    set({ pendingSymbol: symbol }),
 }));

@@ -8,6 +8,11 @@
   touch-action: none;
 }
 
+.canvas.placing-symbol {
+  cursor: copy;
+  background: #f0f8ff;
+}
+
 /* Grid pattern for visual reference */
 .canvas::before {
   content: '';
