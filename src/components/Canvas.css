@@ -49,6 +49,10 @@
   background: #f0f8ff;
 }
 
+.canvas.draw-mode {
+  cursor: crosshair;
+}
+
 /* Grid pattern for visual reference */
 .canvas::before {
   content: '';

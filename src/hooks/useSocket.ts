@@ -5,6 +5,7 @@ import { useWhiteboardStore } from '../store/whiteboardStore';
 const SOCKET_URL = 'http://localhost:3001';
 
 interface TextElement {
+  type: 'text';
   id: string;
   x: number;
   y: number;
@@ -13,10 +14,20 @@ interface TextElement {
   color: string;
 }
 
+interface DrawingElement {
+  type: 'drawing';
+  id: string;
+  points: number[][];
+  color: string;
+  strokeWidth: number;
+}
+
+type WhiteboardElement = TextElement | DrawingElement;
+
 export const useSocket = (roomId: string) => {
   const socketRef = useRef<Socket | null>(null);
   const { elements } = useWhiteboardStore();
-  const lastUpdateRef = useRef<TextElement[]>([]);
+  const lastUpdateRef = useRef<WhiteboardElement[]>([]);
 
   useEffect(() => {
     // Initialize socket connection
@@ -28,7 +39,7 @@ export const useSocket = (roomId: string) => {
     socket.emit('join-room', roomId);
 
     // Listen for room state on join
-    socket.on('room-state', (state: { elements: TextElement[] }) => {
+    socket.on('room-state', (state: { elements: WhiteboardElement[] }) => {
       if (state.elements && state.elements.length > 0) {
         // Update store with room state
         useWhiteboardStore.setState({ elements: state.elements });
@@ -36,7 +47,7 @@ export const useSocket = (roomId: string) => {
     });
 
     // Listen for updates from other users
-    socket.on('elements-updated', (updatedElements: TextElement[]) => {
+    socket.on('elements-updated', (updatedElements: WhiteboardElement[]) => {
       useWhiteboardStore.setState({ elements: updatedElements });
       lastUpdateRef.current = updatedElements;
     });

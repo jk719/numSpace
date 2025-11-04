@@ -1,4 +1,5 @@
 interface TextElement {
+  type: 'text';
   id: string;
   x: number;
   y: number;

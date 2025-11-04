@@ -6,6 +6,7 @@ import { suggestAlignment } from '../utils/smartGrouping';
 import './TextBlock.css';
 
 interface TextElement {
+  type: 'text';
   id: string;
   x: number;
   y: number;
